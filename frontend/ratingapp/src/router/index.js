@@ -7,6 +7,13 @@ const routes = [
     name: "home",
     component: Home,
   },
+  {
+    path: "/categorias/:categoria",
+    name: "categorias",
+    props: true,
+    component: () =>
+      import(/* webpackChunkName: "Categorias" */ "../views/Categorias.vue"),
+  },
 ];
 
 const router = createRouter({

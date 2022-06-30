@@ -1,16 +1,40 @@
 <template>
-  <select @change="onChange(this.value)">
+  <select @change="onChange($event)">
     <option disabled selected>Categorias</option>
-    <option value="/categoria">categoria</option>
+    <option v-for="categoria in categorias" v-bind:key="categoria.categoria">
+      {{ categoria.categoria }}
+    </option>
   </select>
 </template>
 
 <script>
 export default {
   name: "CategorySelector",
+  data() {
+    return {
+      categorias: this.getCategorias(),
+    };
+  },
   methods: {
-    onChange(value) {
-      window.location.href = value;
+    onChange(e) {
+      this.$router.push({
+        name: "categorias",
+        params: { categoria: e.target.value },
+      });
+    },
+    getCategorias() {
+      fetch("http://127.0.0.1:5000/categorias", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          this.categorias = data.categorias;
+        });
     },
   },
 };

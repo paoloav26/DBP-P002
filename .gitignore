@@ -1,2 +1,4 @@
 
 frontend/ratingapp/node_modules
+backend/__pycache__/
+backend/server/__pycache__/

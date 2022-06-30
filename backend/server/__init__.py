@@ -14,7 +14,6 @@ from flask_cors import CORS
 import json
 import sys
 import hashlib
-from pytest import Item
 from sqlalchemy import desc, func, inspect
 
 from models import *
