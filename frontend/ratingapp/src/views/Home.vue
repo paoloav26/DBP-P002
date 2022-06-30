@@ -6,11 +6,7 @@
           <div class="col-md-12 text-center">
             <span class="display-1 d-block">Bienvenido!</span>
             <div class="mb-4 subtitulo">A continuación elige una categoría</div>
-            <select>
-              <option disabled selected>Categorias</option>
-
-              <option value="/categoria">categoria</option>
-            </select>
+            <category-selector />
           </div>
         </div>
       </div>
@@ -20,9 +16,11 @@
 
 <script>
 // @ is an alias to /src
+import CategorySelector from "../components/CategorySelector";
 
 export default {
   name: "Home",
+  components: { CategorySelector },
 };
 </script>
 
