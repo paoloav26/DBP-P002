@@ -1,20 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 
-user = "user:password"
-conection = "localhost:5432"
-data_base_name = "ratingapp"
-database_path = f"postgresql+psycopg2://{user}@{conection}/{data_base_name}"
+database_name='ratingapp'
+database_path="postgresql+psycopg2://{}@{}/{}".format('postgres:admin', 'localhost:5432', database_name)
+db = SQLAlchemy()
 
-db=SQLAlchemy()
-
-def setup_db(app,database_path=database_path):
+def setup_db(app, database_path=database_path):
     app.config['SQLALCHEMY_DATABASE_URI'] = database_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
     db.create_all()
-
+    
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
     username = db.Column(db.String(), primary_key=True)
@@ -29,7 +27,7 @@ class Usuario(db.Model, UserMixin):
         try:
             db.session.add(self)
             db.session.commit()
-            return self.username
+            #return self.username
         except:
             db.session.rollback()
         finally:
@@ -74,11 +72,14 @@ class Items(db.Model):
     categoria = db.Column(db.String(), db.ForeignKey('categorias.categoria'), nullable=True)
     id_rel = db.relationship('Califica', backref='items', lazy=True)
     
+    def get_id(self):
+        return self.id
+    
     def insert(self):
         try:
             db.session.add(self)
             db.session.commit()
-            return self.id
+            #return self.id
         except:
             db.session.rollback()
         finally:
@@ -127,7 +128,8 @@ class Califica(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            return [self.items_id, self.usuario_username]
+            #lista = [self.items_id, self.usuario_username]
+            #return lista
         except:
             db.session.rollback()
         finally:
@@ -171,7 +173,7 @@ class Categorias(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-            return self.categoria
+            #return self.categoria
         except:
             db.session.rollback()
         finally:
