@@ -33,7 +33,10 @@ def pagination_rating(request, selection, isDescendent):
     current_ratings = ratings[start:end]
     return current_ratings
 
-
+def put_in_format(selection):
+    items = [item.format() for item in selection]
+    return items
+    
 def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = "totally_secret_key"
@@ -190,9 +193,10 @@ def create_app(test_config=None):
     
     #ITEMS
     @app.route('/items', methods=['GET'])
-    def get_items():
-        selection = Items.query.order_by('id').all()
-        items = pagination_rating(request,selection,False)
+    def get_items_by_categoria():
+        categoria = request.args.get('categoria')
+        selection = Items.query.filter(Items.categoria == categoria).order_by('id').all()
+        items = put_in_format(selection)
         
         if len(items) == 0:
             abort(404)
@@ -216,7 +220,7 @@ def create_app(test_config=None):
             abort(422)
             
         try:
-            item = Item(nombre=nombre, descripcion=descripcion, calificacion=calificacion, imagen=imagen, categoria=categoria)
+            item = Items(nombre=nombre, descripcion=descripcion, calificacion=calificacion, imagen=imagen, categoria=categoria)
             new_item = item.get_id()
             item.insert()
             

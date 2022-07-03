@@ -120,8 +120,8 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
         
     # TEST ITEMS
-    def test_paginated_items(self):
-        res = self.client().get('/items')
+    def test_items_query_parameter(self):
+        res = self.client().get('/items?categoria=Peliculas')
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 200)
@@ -129,8 +129,8 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(len(data['items']))
         self.assertTrue(data['total_items'])
         
-    def test_paginated_items_error_404(self):
-        res = self.client().get('/items?page=3432')
+    def test_items_query_parameter_error_404(self):
+        res = self.client().get('/items?categoria=Novelas')
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 404)
