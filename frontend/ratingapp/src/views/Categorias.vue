@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     getItems() {
-      fetch("http://127.0.0.1:5000/items", {
+      fetch("http://127.0.0.1:5000/items?categoria=" + this.categoria, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

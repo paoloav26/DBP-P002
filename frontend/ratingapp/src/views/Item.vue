@@ -33,12 +33,15 @@ export default {
   },
   methods: {
     getItems() {
-      fetch("http://127.0.0.1:5000/items", {
-        method: "GET",
-        headers: {
-          "Content-Type": "content/type",
-        },
-      })
+      fetch(
+        "http://127.0.0.1:5000/items?categoria=" + this.$route.params.categoria,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then((res) => {
           return res.json();
         })
