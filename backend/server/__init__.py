@@ -41,7 +41,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = "totally_secret_key"
     setup_db(app)
-    CORS(app, max_age=10)
+    #CORS(app, max_age=10)
     
     @app.after_request
     def after_request(response):
@@ -86,7 +86,10 @@ def create_app(test_config=None):
         password = body.get('password_', None)
         numeros = ['0','1','2','3','4','5','6','7','8 ','9']
         existe_numero = False
-        
+        print("hola")
+        print(username)
+        print(correo)
+        print(password)
         try:
             if username is None or correo is None or password is None:
                 error_422 = True

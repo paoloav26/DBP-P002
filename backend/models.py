@@ -3,7 +3,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_migrate import Migrate
 
 database_name='ratingapp'
-database_path="postgresql+psycopg2://{}@{}/{}".format('postgres:admin', 'localhost:5432', database_name)
+database_path="postgresql+psycopg2://{}@{}/{}".format('postgres:1234', 'localhost:5432', database_name)
 db = SQLAlchemy()
 
 def setup_db(app, database_path=database_path):
