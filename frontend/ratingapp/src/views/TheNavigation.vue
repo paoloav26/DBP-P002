@@ -9,11 +9,8 @@
           <router-link id="login" class="text" v-bind:to="{ name: 'login' }"
             >Login</router-link
           >
-          <router-link
-            id="logout"
-            class="invisible"
-            v-bind:to="{ name: 'logout' }"
-            >Logout</router-link
+          <a href="/" id="logout" class="invisible" @click.prevent="Logout"
+            >Logout</a
           >
         </div>
       </div>
@@ -22,6 +19,7 @@
 </template>
 
 <script>
+import router from "@/router";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -35,6 +33,18 @@ export default {
         document.getElementById("login").className = "invisible";
       }
     });
+  },
+  methods: {
+    Logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          router.push({ name: "home" });
+          console.log("logout");
+        })
+        .catch((err) => alert(err.message));
+    },
   },
 };
 </script>
