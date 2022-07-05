@@ -1,324 +1,216 @@
-import unittest
 from flask_sqlalchemy import SQLAlchemy
-from server import create_app
-from models import setup_db, Items, Califica, Categorias, Usuario
-import json
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_migrate import Migrate
 
-"""
-- Darle mas logica a las funciones como si fuera una WEB
-- Basarse en el anterior modelo de las funciones para la primera entrega
-- Preguntar sobre el test case de la barra de busqueda
-"""
+database_name='ratingapp'
+database_path="postgresql+psycopg2://{}@{}/{}".format('postgres:1234', 'localhost:5432', database_name)
+db = SQLAlchemy()
 
-class TestCaseRatingApp(unittest.TestCase):
+def setup_db(app, database_path=database_path):
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_path
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
+    db.create_all()
     
-    def setUp(self):
-        self.app = create_app()
-        self.client = self.app.test_client
-        self.database_name = 'ratingapp_test'
-        self.database_path = 'postgresql://{}@{}/{}'.format('postgres:admin', 'localhost:5432', self.database_name)
+class Usuario(db.Model, UserMixin):
+    __tablename__ = 'usuario'
+    username = db.Column(db.String(), primary_key=True)
+    correo = db.Column(db.String(), nullable=False, unique=True)
+    password_ = db.Column(db.String(), nullable=False)
+    username_rel = db.relationship('Califica', backref='usuario', lazy=True)
+    
+    def get_id(self):
+        return (self.username)
+    
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            #return self.username
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
 
-        setup_db(self.app, self.database_path)
-        
-        self.new_usuario = {
-            'username': 'Chalanoglu',
-            'correo': 'chala@gmail.com',
-            'password_': 'Chalanoglu12345'
+    def update(self):
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def format(self):
+        return {
+            'username': self.username,
+            'password': self.password_,
+            'correo': self.correo
         }
-        
-        self.new_calificacion = {
-            'usuario_username': 'matias', 
-            'items_id': 2, 
-            'puntaje': 5, 
-            'comentario': 'Me gusto, muy chevere TOP'
+    
+    def __repr__(self):
+        return f'Username: {self.username} Correo: {self.correo}'
+    
+class Items(db.Model):
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(), nullable=False)
+    descripcion = db.Column(db.String(), nullable=False)
+    calificacion = db.Column(db.Integer, nullable=False)
+    imagen = db.Column(db.String(), nullable=False)
+    categoria = db.Column(db.String(), db.ForeignKey('categorias.categoria'), nullable=True)
+    id_rel = db.relationship('Califica', backref='items', lazy=True)
+    
+    def get_id(self):
+        return self.id
+    
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            #return self.id
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+    def update(self):
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def format(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'descripcion': self.descripcion,
+            'calificacion': self.calificacion,
+            'imagen': self.imagen,
+            'categoria': self.categoria
         }
     
-    # TEST USUARIOS
-    def test_paginated_usuarios(self):
-        res = self.client().get('/usuarios')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['usuarios']))
-        self.assertTrue(data['total_usuarios'])
-    
-    def test_paginated_usuarios_with_404_error(self):
-        res = self.client().get('/usuarios?page=5436543')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_create_usuario_success(self):
-        res = self.client().post('/usuarios', json=self.new_usuario)
-        data = json.loads(res.data)
+    def __repr__(self):
+        return f'Id: {self.id} Categoria: {self.categoria} Nombre: {self.nombre} Descripcion: {self.descripcion} Calificacion: {self.calificacion}'
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['created'])
-        self.assertTrue(len(data['usuarios']))
-        self.assertTrue(data['total_usuarios'])
-        
-    def test_create_usuario_with_no_password(self):
-        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password_':None, 'correo': 'alejandro123@gmail.com'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+class Califica(db.Model):
+    __tablename__ = 'califica' 
+    usuario_username = db.Column(db.String(), db.ForeignKey('usuario.username'), primary_key=True, nullable=False) 
+    items_id = db.Column(db.Integer, db.ForeignKey('items.id'), primary_key=True, nullable=False)
+    puntaje = db.Column(db.Integer, nullable=False)
+    comentario = db.Column(db.String(), nullable=True)
     
-    def test_create_usuario_with_no_email(self):
-        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password_':'Alejandro12345', 'correo': None})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def get_usuario(self):
+        return self.usuario_username
     
-    def test_create_usuario_with_no_username(self):
-        res = self.client().post('/usuarios', json={'username': None, 'password_':'Alejandro12345', 'correo': 'alejandro123@gmail.com'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def get_item_id(self):
+        return self.items_id
     
-    def test_create_usuario_with_incorrect_password_format_no_numbers(self):
-        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'Alejandro', 'correo': 'alejandro123@gmail.com'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_create_usuario_with_incorrect_password_format_size_less_than_8(self):
-        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'A123', 'correo': 'alejandro123@gmail.com'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-    
-    def test_delete_usuario_success(self):
-        res = self.client().delete('/usuarios/{}'.format(self.new_usuario['username']))
-        data = json.loads(res.data)
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            #lista = [self.items_id, self.usuario_username]
+            #return lista
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['usuarios'])
-        self.assertTrue(data['total_usuarios'])
-        self.assertEqual(data['deleted'], str(self.new_usuario['username']))
-    
-    def test_delete_usuario_error_404(self):
-        res = self.client().delete('/usuarios/{}'.format('Iker Casillas'))
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code,404)
-        self.assertEqual(data['success'],False)
-        self.assertTrue(data['message'])
-        
-    # TEST ITEMS
-    def test_items_query_parameter(self):
-        res = self.client().get('/items?categoria=Peliculas')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['items']))
-        self.assertTrue(data['total_items'])
-        
-    def test_items_query_parameter_error_404(self):
-        res = self.client().get('/items?categoria=Novelas')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_search_bar_items(self):
-        pass
-    
-    #TEST CATEGORIA
-    def test_paginated_categorias(self):
-        res = self.client().get('/categorias')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['categorias']))
-        self.assertTrue(data['total_categorias'])
-        
-    def test_paginated_categorias_error_404(self):
-        res = self.client().get('/categorias?page=50')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    # TEST CALIFICACIONES
-    def test_paginated_calificaciones(self):
-        res = self.client().get('/calificaciones')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['calificaciones']))
-        self.assertTrue(data['total_calificaciones'])
-    
-    def test_paginated_calificaciones_with_404_error(self):
-        res = self.client().get('/calificaciones?page=50')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-    
-    def test_create_calificacion_success(self):
-        res = self.client().post('/calificaciones', json=self.new_calificacion)
-        data = json.loads(res.data)
+    def update(self):
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['id_created'])
-        self.assertTrue(data['username_created'])
-        self.assertTrue(len(data['calificaciones']))
-        self.assertTrue(data['total_calificaciones'])
 
-    def test_create_calificacion_with_no_username(self):
-        res = self.client().post('/calificaciones', json={'usuario_username': None, 'items_id': 2, 'puntaje': 5, 'comentario': 'Me gusto, muy chevere TOP'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def format(self):
+        return {
+            'username': self.usuario_username,
+            'item_id': self.items_id,
+            'puntaje': self.puntaje,
+            'comentario': self.comentario
+        }
     
-    def test_create_calificacion_with_no_id_item(self):
-        res = self.client().post('/calificaciones', json={'usuario_username': 'matiazzz', 'items_id': None, 'puntaje': 5, 'comentario': 'Me gusto, muy chevere TOP'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def __repr__(self):
+        return f'Username: {self.usuario_username} Id Item: {self.items_id} Puntaje: {self.puntaje} Comentario: {self.comentario}'
+
+class Categorias(db.Model):
+    categoria = db.Column(db.String(), primary_key=True ,nullable=False)
+    cateogia_rel = db.relationship('Items', backref='categorias', lazy=True)
     
-    def test_create_calificacion_with_no_puntaje(self):
-        res = self.client().post('/calificaciones', json={'usuario_username': 'matiazzz', 'items_id': 2, 'puntaje': None, 'comentario': 'Me gusto, muy chevere TOP'})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def get_categoria(self):
+        return self.categoria
     
-    def test_create_calificacion_with_no_comentario(self):
-        res = self.client().post('/calificaciones', json={'usuario_username': 'matiazzz', 'items_id': 2, 'puntaje': 5, 'comentario': None})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_create_calificacion_with_comentario_with_space_blanks(self):
-        res = self.client().post('/calificaciones', json={'usuario_username': 'matiazzz', 'items_id': 2, 'puntaje': 5, 'comentario': '        '})
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            #return self.categoria
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+    def update(self):
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+
+
+    def format(self):
+        return {
+            'categoria': self.categoria
+        }
     
-    def test_update_calificacion_success(self):
-        res0 = self.client().post('/calificaciones', json=self.new_calificacion)
-        data0 = json.loads(res0.data)
-        updated_username = data0['username_created']
-        updated_id = data0['id_created']
-
-        res = self.client().patch('/calificaciones/{}/{}'.format(updated_username,updated_id), json={'puntaje': 2, 'comentario': 'Aburrido ZZZZ'})
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertEqual(data['item_calificado'], str(updated_id))
-        self.assertEqual(data['username'], str(updated_username))
-    
-    def test_update_calificacion_with_no_puntaje(self):
-        res = self.client().patch('/calificaciones/matias/1', json={'puntaje': None, 'comentario': 'TREMENDO XD'})
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-    
-    def test_update_calificacion_with_no_comentario(self):
-        res = self.client().patch('/calificaciones/mosquis/1', json={'puntaje': 1, 'comentario': None})
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_update_calificacion_with_comentario_with_space_blanks(self):
-        res = self.client().patch('/calificaciones/mosquis/1', json={'puntaje': 1, 'comentario': '     '})
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-    
-    def test_update_calificacion_error_url(self):
-        res = self.client().patch('/calificaciones/ronaldinho/-24', json={'puntaje': 4, 'Comentario': 'chevere la pelicula'})
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
-    
-    def test_delete_calificacion_success(self):
-        res0 = self.client().post('/calificaciones', json=self.new_calificacion)
-        data0 = json.loads(res0.data)
-        deleted_id = data0['id_created']
-        deleted_user_coment = data0['username_created']
-
-        res = self.client().delete('/calificaciones/{}/{}'.format(deleted_user_coment, deleted_id))
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['calificaciones'])
-        self.assertTrue(data['total_calificaciones'])
-        self.assertEqual(data['deleted_comentario_item'], str(deleted_id))
-        self.assertEqual(data['deleted_comentario_user'], str(deleted_user_coment))
-    
-    def test_delete_calificacion_error_404_in_username(self):
-        res = self.client().delete('/calificaciones/{}/{}'.format('Jano',1))
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
-    def test_delete_calificacion_error_404_in_itemID(self):
-        res = self.client().delete('/calificaciones/{}/{}'.format('matiazzz',-342))
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-    
-"""
-import pytest
-from flask.testing import FlaskClient
-from app import app
-
-@pytest.fixture
-def client():
-    return app.test_client()
-
-def test_service_correcto(client: FlaskClient):
-    resp = client.post('/register_validator', json={'email': 'AAAAZsome@thing.com', 'password': 'Zholass123','username':'MMMatiasQZ22'})
-    assert resp.json.get('msg')== "Register sucessful!"
-
-def test_service_mala_contra(client: FlaskClient):
-    resp = client.post('/register_validator', json={'email': 'ERR@thing.com', 'password': '123','username':'ERR`'})
-    assert resp.json.get('msg')== "La contraseña no cumple con tener 9 caracteres como minimo"
-"""
+    def __repr__(self):
+        return f'Categoria: {self.categoria}'
