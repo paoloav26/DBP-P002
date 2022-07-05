@@ -15,10 +15,12 @@
       </div>
     </div>
   </div>
+  <nologinreturn />
 </template>
 
 <script>
 import TheNavigation from "./TheNavigation.vue";
+import Nologinreturn from "@/components/Nologinreturn.vue";
 
 export default {
   name: "Item",
@@ -53,7 +55,7 @@ export default {
         });
     },
   },
-  components: { TheNavigation },
+  components: { TheNavigation, Nologinreturn },
 };
 </script>
 

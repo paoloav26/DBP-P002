@@ -14,10 +14,12 @@
       </div>
     </div>
   </div>
+  <nologinreturn />
 </template>
 
 <script>
 import TheNavigation from "./TheNavigation.vue";
+import Nologinreturn from "@/components/Nologinreturn.vue";
 
 export default {
   data() {
@@ -48,7 +50,7 @@ export default {
     },
   },
   computed: {},
-  components: { TheNavigation },
+  components: { TheNavigation, Nologinreturn },
 };
 </script>
 
