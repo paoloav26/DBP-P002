@@ -1,5 +1,3 @@
-from distutils.log import error
-from shutil import ExecError
 from flask import (
     Flask,
     jsonify,
@@ -41,7 +39,8 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = "totally_secret_key"
     setup_db(app)
-    #CORS(app, max_age=10)
+    CORS(app, resources={r"/*":{'origins':"*"}})
+    CORS(app, resources={r"/*":{'origins':"https://http://localhost:8080","allow_headers":"Access-Control-Allow-Origin"}})
     
     @app.after_request
     def after_request(response):
