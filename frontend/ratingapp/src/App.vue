@@ -11,35 +11,12 @@
     crossorigin="anonymous"
   />
 
-  <the-navigation />
   <router-view :key="$route.path" />
 </template>
 
 <script>
-import { onBeforeMount } from "vue";
-import TheNavigation from "./views/TheNavigation.vue";
-import { useRouter, useRoute } from "vue-router";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 export default {
-  setup() {
-    const router = useRouter();
-    const route = useRoute();
-
-    onBeforeMount(() => {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (!user) {
-          router.replace("/login");
-        } else if (route.path == "/login" || route.path == "/register") {
-          router.replace("/");
-        }
-      });
-    });
-  },
   name: "App",
-  components: {
-    TheNavigation,
-  },
 };
 </script>
 

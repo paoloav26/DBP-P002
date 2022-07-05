@@ -1,4 +1,5 @@
 <template>
+  <the-navigation />
   <div class="item_display">
     <h1 style="margin-bottom: 15px">{{ item_data.nombre }}</h1>
     <div class="image_description_container">
@@ -17,6 +18,8 @@
 </template>
 
 <script>
+import TheNavigation from "./TheNavigation.vue";
+
 export default {
   name: "Item",
   data() {
@@ -50,6 +53,7 @@ export default {
         });
     },
   },
+  components: { TheNavigation },
 };
 </script>
 

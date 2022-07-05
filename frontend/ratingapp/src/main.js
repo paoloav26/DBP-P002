@@ -5,12 +5,12 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAHMFWabMhXzM7vm56HV3dwzlzh4VnB7dw",
-  authDomain: "ratingapp-bd693.firebaseapp.com",
-  projectId: "ratingapp-bd693",
-  storageBucket: "ratingapp-bd693.appspot.com",
-  messagingSenderId: "749211638150",
-  appId: "1:749211638150:web:c7e96b6566bc7923853407",
+  apiKey: "AIzaSyBbykj14XVqqbwWN9sAR6dxsc-4ANiKeIs",
+  authDomain: "dbp-rating-app.firebaseapp.com",
+  projectId: "dbp-rating-app",
+  storageBucket: "dbp-rating-app.appspot.com",
+  messagingSenderId: "197968183325",
+  appId: "1:197968183325:web:693546bb6fd02d731c86f4",
 };
 
 firebase.initializeApp(firebaseConfig);

@@ -1,5 +1,6 @@
 <template>
   <title>{{ categoria }}</title>
+  <the-navigation />
   <div>
     <div id="items_list" class="items_list">
       <div class="item" v-for="item in items" v-bind:key="item.id">
@@ -16,6 +17,8 @@
 </template>
 
 <script>
+import TheNavigation from "./TheNavigation.vue";
+
 export default {
   data() {
     return {
@@ -45,6 +48,7 @@ export default {
     },
   },
   computed: {},
+  components: { TheNavigation },
 };
 </script>
 
