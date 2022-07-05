@@ -124,6 +124,12 @@ class Califica(db.Model):
     puntaje = db.Column(db.Integer, nullable=False)
     comentario = db.Column(db.String(), nullable=True)
     
+    def get_usuario(self):
+        return self.usuario_username
+    
+    def get_item_id(self):
+        return self.items_id
+    
     def insert(self):
         try:
             db.session.add(self)
@@ -168,6 +174,9 @@ class Califica(db.Model):
 class Categorias(db.Model):
     categoria = db.Column(db.String(), primary_key=True ,nullable=False)
     cateogia_rel = db.relationship('Items', backref='categorias', lazy=True)
+    
+    def get_categoria(self):
+        return self.categoria
     
     def insert(self):
         try:
