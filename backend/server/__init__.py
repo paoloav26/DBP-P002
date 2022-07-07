@@ -60,7 +60,7 @@ def create_app(test_config=None):
     @app.route('/usuarios', methods=['GET'])
     def get_usuarios():
         selection = Usuario.query.order_by('username').all()
-        usuarios = pagination_rating(request, selection, False)
+        usuarios = put_in_format(selection)
         
         if len(usuarios) == 0:
             abort(404)
@@ -287,6 +287,10 @@ def create_app(test_config=None):
         item_id=request.args.get("item",None)
         selection = Califica.query.filter_by(items_id=item_id).all()
         calificaciones = [ item.format() for item in selection]
+        puntaje_promedio = 0
+        
+        for i in calificaciones:
+            puntaje_promedio += i['puntaje']
         
         if len(selection) == 0:
             abort(404)
@@ -294,7 +298,8 @@ def create_app(test_config=None):
         return jsonify({
             'success': True,
             'calificaciones': calificaciones,
-            'total_calificaciones': len(selection)
+            'total_calificaciones': len(selection),
+            'puntaje': puntaje_promedio / len(selection)
         })
         
     @app.route('/calificaciones', methods=['POST'])
