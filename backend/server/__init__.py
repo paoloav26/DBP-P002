@@ -40,7 +40,7 @@ def create_app(test_config=None):
     app.secret_key = "totally_secret_key"
     setup_db(app)
     CORS(app, resources={r"/*":{'origins':"*"}})
-    CORS(app, resources={r"/*":{'origins':"https://http://localhost:8080","allow_headers":"Access-Control-Allow-Origin"}})
+    CORS(app, resources={r"/*":{'origins':"http://localhost:8080","allow_headers":"Access-Control-Allow-Origin"}})
     
     @app.after_request
     def after_request(response):
