@@ -42,24 +42,19 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
     <br />
     -   Host:127.0.0.1:5000
 ## Información acerca de los EndPoints.  
-### login:
-Renderiza el template login.html
-### login_validator: 
-Recibe el diccionario de datos json y valida que la contraseña ingresada sea la correcta, caso contrario muestra un error del tipo 500.
-### register_validator: 
-Recibe el diccionario de datos json e inserta la data en la bd, corroborando que la contraseña tenga más de 8 caracteres y por lo menos un número, en caso la clave no cumpla con los requirimentos se imprimira un desplegable de advertencia, además si las llaves primarias ya estan ocupadas, muestra un error del tipo 500.
-### search_items: 
-Recibe el diccionario de datos json, y dado el nombre de la película y categoría, muestra el contenido requerido.
-### comentar: 
-Recibe el diccionario de datos json e inserta el comentario si es exitoso el status cambia a 200. En caso ya tenga un comentario, se mostrara una advertencia, ya que solo se 
-puede tener una reseña y el status sera 409, consecuentemente el usuario tendra la posibilidad de actualizar o eliminar su comentario. Por último si el formulario tiene partes vacias el status sera 400.
-### eliminar_comentario:
-Elimina el comentario publicado por el usuario logeado.
-### actualizar_comentario:
-Actualiza el comentario publicado por el usuario logeado, si no hay problemas el status sera de 200, caso contrario 500.
+### /usuarios (Get)
+Retorna un diccionario de datos JSON, con tres características success, usuarios y total_usuarios, si la cantidad de usuarios es 0 retornar un error 404, caso contrario, los valores del diccionario seran los siguientes; True, usuarios (todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente.
+### /usuarios (Post)
+Recibe el diccionario JSON con los datos para la inserción, si alguno de los campos esta vacio retorna un error 422, si el correo o usuario ya existen en la bd retorna un error 500, en caso no suceda nada de lo anterior se encripta la contraseña y se procede al insert, retornando un JSON con las siguientes características success, created, usuarios, total_usuarios; los valores del diccionario seran los siguientes; True, new_usuario (el usuario insertado), usuarios(todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente.
+### /usuarios/<username> (Patch)
+Si el username no existe retorna un error 404, caso contrario actualiza el correo, contraseña y username del usuario, retornando un diccionario JSON con las siguientes características success, usuario; los valores del diccionario seran los siguientes; True, username; respectivamente. 
+### /usuarios/<username> (Delte)
+Si el username no existe retorna un error 404, caso contrario elimina el usuario, retornando un diccionario JSON con las siguientes características success, deleted, usuario, total_usuarios; los valores del diccionario seran los siguientes; True, username, usuarios (todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente. 
+
+
 ## Información respecto al testing por Modelo
 ### Usuarios: 10 Tests
 ### Items: 2 Tests
 ### Categoria: 2 tests
 ### Calificaciones: 16 tests
-Cabe destacar que la cantidad de tests no es homogénea debido a que por ejemplo Items y Categorías son modelos que no presenten operaciones de update, inserción o delete, es debido a eso su baja cantidad de pruebas.
+Cabe destacar que la cantidad de tests no es homogénea debido a que por ejemplo Items y Categorías son modelos que no presentan operaciones de update, inserción o delete, es debido a eso su baja cantidad de pruebas.
