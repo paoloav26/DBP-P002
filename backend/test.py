@@ -23,7 +23,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.new_usuario = {
             'username': 'Chalanoglu',
             'correo': 'chala@gmail.com',
-            'password_': 'Chalanoglu12345'
+            'password_': 'Chalanoglux12345'
         }
         
         self.new_calificacion = {
@@ -34,23 +34,6 @@ class TestCaseRatingApp(unittest.TestCase):
         }
     
     # TEST USUARIOS
-    def test_paginated_usuarios(self):
-        res = self.client().get('/usuarios')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['usuarios']))
-        self.assertTrue(data['total_usuarios'])
-    
-    def test_paginated_usuarios_with_404_error(self):
-        res = self.client().get('/usuarios?page=5436543')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'])
-        
     def test_create_usuario_success(self):
         res = self.client().post('/usuarios', json=self.new_usuario)
         data = json.loads(res.data)
@@ -86,7 +69,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
     
     def test_create_usuario_with_incorrect_password_format_no_numbers(self):
-        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'Alejandro', 'correo': 'alejandro123@gmail.com'})
+        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'Ale', 'correo': 'alejandro123@gmail.com'})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 401)
@@ -156,15 +139,6 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
         
     # TEST CALIFICACIONES
-    def test_paginated_calificaciones(self):
-        res = self.client().get('/calificaciones')
-        data = json.loads(res.data)
-        
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(len(data['calificaciones']))
-        self.assertTrue(data['total_calificaciones'])
-    
     def test_paginated_calificaciones_with_404_error(self):
         res = self.client().get('/calificaciones?page=50')
         data = json.loads(res.data)
