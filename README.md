@@ -62,3 +62,4 @@ Actualiza el comentario publicado por el usuario logeado, si no hay problemas el
 ### Items: 2 Tests
 ### Categoria: 2 tests
 ### Calificaciones: 16 tests
+Cabe destacar que la cantidad de tests no es homogénea debido a que por ejemplo Items y Categorías son modelos que no presenten operaciones de update, inserción o delete, es debido a eso su baja cantidad de pruebas.
