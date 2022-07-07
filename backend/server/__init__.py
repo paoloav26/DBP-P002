@@ -77,8 +77,8 @@ def create_app(test_config=None):
         error_401 = False
         body = request.get_json()
         username = body.get('username', None)
-        correo = body.get('correo', None)
-        password = body.get('password_', None)
+        correo = body.get('email', None)
+        password = body.get('password', None)
         numeros = ['0','1','2','3','4','5','6','7','8 ','9']
         existe_numero = False
         
