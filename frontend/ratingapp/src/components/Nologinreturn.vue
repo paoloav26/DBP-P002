@@ -10,7 +10,7 @@ export default {
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         router.push({ name: "home" });
-        alert("Not logged in");
+        this.$router.reload();
       }
     });
   },

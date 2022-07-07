@@ -68,6 +68,17 @@ export default {
         .then((user) => {
           console.log(user);
           router.push({ name: "home" });
+          fetch("http://127.0.0.1:5000/usuarios", {
+            method: "POST",
+            body: JSON.stringify({
+              email: this.$data.email,
+              password: this.$data.password,
+              username: this.$data.username,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
         })
         .catch((err) => alert(err.message));
     },

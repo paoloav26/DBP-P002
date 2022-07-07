@@ -12,8 +12,11 @@ export default {
   name: "CategorySelector",
   data() {
     return {
-      categorias: this.getCategorias(),
+      categorias: "",
     };
+  },
+  created() {
+    this.getCategorias();
   },
   methods: {
     onChange(e) {

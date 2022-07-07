@@ -81,14 +81,10 @@ def create_app(test_config=None):
         error_401 = False
         body = request.get_json()
         username = body.get('username', None)
-        correo = body.get('correo', None)
-        password = body.get('password_', None)
+        correo = body.get('email', None)
+        password = body.get('password', None)
         numeros = ['0','1','2','3','4','5','6','7','8 ','9']
         existe_numero = False
-        print("hola")
-        print(username)
-        print(correo)
-        print(password)
         try:
             if username is None or correo is None or password is None:
                 error_422 = True
@@ -98,29 +94,21 @@ def create_app(test_config=None):
             temp_username = Usuario.query.filter_by(username=username).first()
 
             if temp_correo == None and temp_username == None:
-                for i in password:
-                    if i in numeros:
-                        existe_numero = True
-                        
-                if len(password) > 8 and existe_numero == True:
-                    password = Sha512Hash(password)
-                    usuario = Usuario(username=username, correo=correo, password_=password)
-                    usuario.insert()
-                    new_usuario = username
+                password = Sha512Hash(password)
+                usuario = Usuario(username=username, correo=correo, password_=password)
+                usuario.insert()
+                new_usuario = username
 
-                    selection = Usuario.query.order_by('username').all()
-                    usuarios = pagination_rating(request,selection,True)
+                selection = Usuario.query.order_by('username').all()
+                usuarios = pagination_rating(request,selection,True)
 
-                    return jsonify({
-                        'success': True,
-                        'created': new_usuario,
-                        'usuarios': usuarios,
-                        'total_usuarios': len(selection)
-
-                    })
-                else:
-                    error_401 = True
-                    abort(401)
+                return jsonify({
+                    'success': True,
+                    'created': new_usuario,
+                    'usuarios': usuarios,
+                    'total_usuarios': len(selection)
+                })
+                
             else:
                 abort(500)
         except Exception as e:
@@ -304,10 +292,11 @@ def create_app(test_config=None):
     #CALIFICA
     @app.route('/calificaciones', methods=['GET'])
     def get_calificaciones():
-        selection = Califica.query.order_by('items_id').all()
-        calificaciones = pagination_rating(request,selection,False)
+        item_id=request.args.get("item",None)
+        selection = Califica.query.filter_by(items_id=item_id).all()
+        calificaciones = [ item.format() for item in selection]
         
-        if len(calificaciones) == 0:
+        if len(selection) == 0:
             abort(404)
         
         return jsonify({

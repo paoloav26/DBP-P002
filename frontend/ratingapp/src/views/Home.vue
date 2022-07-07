@@ -9,7 +9,6 @@
             <div class="mb-4 subtitulo">A continuación elige una categoría</div>
             <category-selector />
           </div>
-          <button class="logout" @click="Logout">Logout</button>
         </div>
       </div>
     </div>

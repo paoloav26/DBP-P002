@@ -2,6 +2,9 @@
   <title>{{ categoria }}</title>
   <the-navigation />
   <div>
+    <div style="justify-content: center; display: flex; padding: 15px">
+      <category-selector />
+    </div>
     <div id="items_list" class="items_list">
       <div class="item" v-for="item in items" v-bind:key="item.id">
         <router-link v-bind:to="{ name: 'item', params: { item: item.id } }">
@@ -20,6 +23,7 @@
 <script>
 import TheNavigation from "./TheNavigation.vue";
 import Nologinreturn from "@/components/Nologinreturn.vue";
+import CategorySelector from "@/components/CategorySelector.vue";
 
 export default {
   data() {
@@ -50,7 +54,7 @@ export default {
     },
   },
   computed: {},
-  components: { TheNavigation, Nologinreturn },
+  components: { TheNavigation, Nologinreturn, CategorySelector },
 };
 </script>
 
