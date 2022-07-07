@@ -38,9 +38,6 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
     <br />
     -  Host:127.0.0.1:5000   
     <br />
--Frontend: ...
-    <br />
-    -   Host:127.0.0.1:5000
 ## Información acerca de los EndPoints.  
 ### /usuarios (Get)
 Retorna un diccionario de datos JSON, con tres características success, usuarios y total_usuarios, si la cantidad de usuarios es 0 retorna un error 404, caso contrario, los valores del diccionario seran los siguientes; True, usuarios (todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente.
