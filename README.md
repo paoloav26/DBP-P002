@@ -46,9 +46,9 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
 Retorna un diccionario de datos JSON, con tres características success, usuarios y total_usuarios, si la cantidad de usuarios es 0 retornar un error 404, caso contrario, los valores del diccionario seran los siguientes; True, usuarios (todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente.
 ### /usuarios (Post)
 Recibe el diccionario JSON con los datos para la inserción, si alguno de los campos esta vacio retorna un error 422, si el correo o usuario ya existen en la bd retorna un error 500, en caso no suceda nada de lo anterior se encripta la contraseña y se procede al insert, retornando un JSON con las siguientes características success, created, usuarios, total_usuarios; los valores del diccionario seran los siguientes; True, new_usuario (el usuario insertado), usuarios(todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente.
-### /usuarios/<username> (Patch)
+### /usuarios/_<username> (Patch)
 Si el username no existe retorna un error 404, caso contrario actualiza el correo, contraseña y username del usuario, retornando un diccionario JSON con las siguientes características success, usuario; los valores del diccionario seran los siguientes; True, username; respectivamente. 
-### /usuarios/<username> (Delte)
+### /usuarios/_<username> (Delte)
 Si el username no existe retorna un error 404, caso contrario elimina el usuario, retornando un diccionario JSON con las siguientes características success, deleted, usuario, total_usuarios; los valores del diccionario seran los siguientes; True, username, usuarios (todos los usuarios ordenados por username con su respectiva paginación), len(usuarios); respectivamente. 
 
 
