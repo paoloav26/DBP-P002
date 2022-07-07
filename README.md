@@ -36,7 +36,8 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
 ## Script principal
 - API: app.py
     <br />
-    -   Host:127.0.0.1:5000   
+    -  Host:127.0.0.1:5000   
+    <br />
 -Frontend: ...
     <br />
     -   Host:127.0.0.1:5000
