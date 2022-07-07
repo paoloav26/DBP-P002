@@ -41,7 +41,7 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
 -Frontend: ...
     <br />
     -   Host:127.0.0.1:5000
-## Información acerca de los APIs. Requests y Responses  
+## Información acerca de los EndPoints.  
 ### login:
 Renderiza el template login.html
 ### login_validator: 
@@ -57,3 +57,8 @@ puede tener una reseña y el status sera 409, consecuentemente el usuario tendra
 Elimina el comentario publicado por el usuario logeado.
 ### actualizar_comentario:
 Actualiza el comentario publicado por el usuario logeado, si no hay problemas el status sera de 200, caso contrario 500.
+## Información respecto al testing por Modelo
+### Usuarios: 10 Tests
+### Items: 2 Tests
+### Categoria: 2 tests
+### Calificaciones: 16 tests
