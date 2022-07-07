@@ -136,9 +136,6 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'])
-        
-    def test_search_bar_items(self):
-        pass
     
     #TEST CATEGORIA
     def test_paginated_categorias(self):
@@ -304,21 +301,3 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'])
-    
-"""
-import pytest
-from flask.testing import FlaskClient
-from app import app
-
-@pytest.fixture
-def client():
-    return app.test_client()
-
-def test_service_correcto(client: FlaskClient):
-    resp = client.post('/register_validator', json={'email': 'AAAAZsome@thing.com', 'password': 'Zholass123','username':'MMMatiasQZ22'})
-    assert resp.json.get('msg')== "Register sucessful!"
-
-def test_service_mala_contra(client: FlaskClient):
-    resp = client.post('/register_validator', json={'email': 'ERR@thing.com', 'password': '123','username':'ERR`'})
-    assert resp.json.get('msg')== "La contraseña no cumple con tener 9 caracteres como minimo"
-"""
