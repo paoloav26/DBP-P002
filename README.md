@@ -11,6 +11,7 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
 
 ## Objetivos principales
 -Implementar el foro mencionado anteriormente, con operaciones CRUD.
+\\
 -Crear una Restful API que permita acceder a toda la información subyacente.
 
 ## Misión
