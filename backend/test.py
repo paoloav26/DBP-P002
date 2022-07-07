@@ -22,8 +22,8 @@ class TestCaseRatingApp(unittest.TestCase):
         
         self.new_usuario = {
             'username': 'Chalanoglu',
-            'correo': 'chala@gmail.com',
-            'password_': 'Chalanoglux12345'
+            'email': 'chala@gmail.com',
+            'password': 'Chalanoglux12345'
         }
         
         self.new_calificacion = {
@@ -45,7 +45,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['total_usuarios'])
         
     def test_create_usuario_with_no_password(self):
-        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password_':None, 'correo': 'alejandro123@gmail.com'})
+        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password':None, 'email': 'alejandro123@gmail.com'})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 422)
@@ -53,7 +53,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
     
     def test_create_usuario_with_no_email(self):
-        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password_':'Alejandro12345', 'correo': None})
+        res = self.client().post('/usuarios', json={'username': 'Alejandro', 'password':'Alejandro12345', 'email': None})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 422)
@@ -61,7 +61,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
     
     def test_create_usuario_with_no_username(self):
-        res = self.client().post('/usuarios', json={'username': None, 'password_':'Alejandro12345', 'correo': 'alejandro123@gmail.com'})
+        res = self.client().post('/usuarios', json={'username': None, 'password':'Alejandro12345', 'email': 'alejandro123@gmail.com'})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 422)
@@ -69,7 +69,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
     
     def test_create_usuario_with_incorrect_password_format_no_numbers(self):
-        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'Ale', 'correo': 'alejandro123@gmail.com'})
+        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password':'Ale', 'email': 'alejandro123@gmail.com'})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 401)
@@ -77,7 +77,7 @@ class TestCaseRatingApp(unittest.TestCase):
         self.assertTrue(data['message'])
         
     def test_create_usuario_with_incorrect_password_format_size_less_than_8(self):
-        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password_':'A123', 'correo': 'alejandro123@gmail.com'})
+        res = self.client().post('/usuarios', json={'username': 'AlejandrosXD', 'password':'A123', 'email': 'alejandro123@gmail.com'})
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 401)
