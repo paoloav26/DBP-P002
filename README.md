@@ -6,11 +6,12 @@
 - Dimael Rivas Chavez [artrivas]
 - Matias Avendaño Vargas  [Matias222]
 
-## Descripcion 
+## Descripción 
 Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y puntuar una película, serie, novela, anime, etc y que a su vez estos comentarios puedan ser visualizados por los demás participantes.
 
 ## Objetivos principales
 -Implementar el foro mencionado anteriormente, con operaciones CRUD.
+-Crear una Restful API que permita acceder a toda la información subyacente.
 
 ## Misión
 - Conectar mediante el intercambio de reseñas a distintas personas, para asi lograr una mayor intertextualidad en los comentarios. 
@@ -20,6 +21,7 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
 
 ## Librerías y Frameworks
 ### Front-end:
+    -Vue
     -Bootstrap
 ### Back-end:
     -Flask
@@ -28,6 +30,7 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
     -Sys
 ### Base de datos:
     -PostgreSQL
+    -FireBase
 
 ## Script principal
 - app.py
