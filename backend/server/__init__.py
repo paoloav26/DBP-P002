@@ -77,36 +77,44 @@ def create_app(test_config=None):
         error_401 = False
         body = request.get_json()
         username = body.get('username', None)
-        correo = body.get('email', None)
-        password = body.get('password', None)
+        correo = body.get('correo', None)
+        password = body.get('password_', None)
         numeros = ['0','1','2','3','4','5','6','7','8 ','9']
         existe_numero = False
+        
         try:
             if username is None or correo is None or password is None:
                 error_422 = True
                 abort(422)
+            
+            for i in password:
+                if i in numeros:
+                    existe_numero = True
 
-            temp_correo = Usuario.query.filter_by(correo=correo).first()
-            temp_username = Usuario.query.filter_by(username=username).first()
+            if len(password) >= 8 and existe_numero == True:
+                temp_correo = Usuario.query.filter_by(correo=correo).first()
+                temp_username = Usuario.query.filter_by(username=username).first()
 
-            if temp_correo == None and temp_username == None:
-                password = Sha512Hash(password)
-                usuario = Usuario(username=username, correo=correo, password_=password)
-                usuario.insert()
-                new_usuario = username
+                if temp_correo == None and temp_username == None:
+                    password = Sha512Hash(password)
+                    usuario = Usuario(username=username, correo=correo, password_=password)
+                    usuario.insert()
+                    new_usuario = username
 
-                selection = Usuario.query.order_by('username').all()
-                usuarios = pagination_rating(request,selection,True)
+                    selection = Usuario.query.order_by('username').all()
+                    usuarios = pagination_rating(request,selection,True)
 
-                return jsonify({
-                    'success': True,
-                    'created': new_usuario,
-                    'usuarios': usuarios,
-                    'total_usuarios': len(selection)
-                })
-                
+                    return jsonify({
+                        'success': True,
+                        'created': new_usuario,
+                        'usuarios': usuarios,
+                        'total_usuarios': len(selection)
+                    })
+                else:
+                    abort(500)
             else:
-                abort(500)
+                error_401 = True
+                abort(401)
         except Exception as e:
             print(e)
             if error_422:
