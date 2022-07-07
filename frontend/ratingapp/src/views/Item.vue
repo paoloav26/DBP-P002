@@ -11,7 +11,7 @@
         <h2>Description:</h2>
         <p1 style="font-size: large">{{ item_data.descripcion }}</p1>
         <br />
-        <h4>Calificación: {{ item_data.calificacion }}⭐</h4>
+        <h4>Calificación: {{ puntaje_item }}⭐</h4>
         <from>
           <h4>Tu Calificacion</h4>
           <div id="puntaje" style="display: inline">
@@ -87,6 +87,7 @@
               id="eliminar"
               style="margin: 15px 0px 10px 10px"
               class=""
+              @click.prevent="deleteCalificacion"
             />
             <a href="/actualizar_comentario/{{item.id}}">
               <input
@@ -116,7 +117,6 @@
       </div>
     </div>
   </div>
-  {{ comentario }}
   <nologinreturn />
 </template>
 
@@ -139,6 +139,7 @@ export default {
       comentario: "",
       comentarioi: "",
       puntaje: "",
+      puntaje_item: "",
     };
   },
   computed: {
@@ -151,6 +152,7 @@ export default {
     this.getComentarios();
     this.getUser();
     this.getComentario();
+    this.getCalificacion();
   },
   methods: {
     getItems() {
@@ -185,6 +187,23 @@ export default {
         })
         .then((data) => {
           this.comentarios = data.calificaciones;
+        });
+    },
+    getCalificacion() {
+      fetch(
+        "http://127.0.0.1:5000/calificaciones?item=" + this.$route.params.item,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          this.$data.puntaje_item = data.puntaje;
         });
     },
     getComentario() {
@@ -272,6 +291,26 @@ export default {
           console.log(data);
           this.$data.comentarioi = this.$data.comentario;
           this.$data.comentarioi = this.$data.comentario;
+        });
+    },
+    deleteCalificacion() {
+      fetch(
+        "http://127.0.0.1:5000/calificaciones/" +
+          this.$data.user.username +
+          "/" +
+          this.$data.item_id,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
         });
     },
   },
