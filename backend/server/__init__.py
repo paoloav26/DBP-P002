@@ -55,10 +55,6 @@ def create_app(test_config=None):
     def Sha512Hash(Password): 
         HashedPassword=hashlib.sha512(Password.encode('utf-8')).hexdigest()
         return HashedPassword
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return Usuario.query.filter_by(username=user_id).first()
     
     # USUARIOS
     @app.route('/usuarios', methods=['GET'])
@@ -119,10 +115,6 @@ def create_app(test_config=None):
                 abort(401)
             else:
                 abort(500)
-            
-    @app.route('/usuarios/login', methods=['GET'])
-    def login_user():
-        pass
         
     @app.route('/usuarios/<username>', methods=['PATCH'])
     def update_usuarios(username):
