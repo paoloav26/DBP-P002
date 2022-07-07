@@ -34,8 +34,12 @@ Un foro con la capacidad de brindarle al usuario la posibilidad de criticar y pu
     -FireBase
 
 ## Script principal
-- app.py
+- API: app.py
+    <br />
     -   Host:127.0.0.1:5000   
+-Frontend: ...
+    <br />
+    -   Host:127.0.0.1:5000
 ## Información acerca de los APIs. Requests y Responses  
 ### login:
 Renderiza el template login.html
